@@ -4,6 +4,7 @@
 .idea
 cache
 fig.yml.sample
-releases
+/releases
 database/dhis2-db.sql.gz
 .DS_Store
+/wars

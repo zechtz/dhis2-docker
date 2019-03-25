@@ -6,7 +6,7 @@ set -e;
 function print_usage {
   me=`basename "$0"`
   echo "Usage: ./$me -v <dhis2 version> -d <data set>";
-  echo "Example: ./$me -v 2.20 -d sierra-leone";
+  echo "Example: ./$me -v 2.31 -d sierra-leone";
   exit 1;
 }
 
@@ -21,8 +21,8 @@ function patch_demo_db {
 
   # The demo database has the ability to run analytics disabled. This SQL enables the functionality.
   echo "
-    INSERT INTO userrolemembers 
-    SELECT b.userroleid,a.userid from 
+    INSERT INTO userrolemembers
+    SELECT b.userroleid,a.userid from
     (SELECT userid from users where username = 'admin' ) a
     CROSS JOIN (SELECT userroleid from userrole where name = 'System administrator (ALL)') b;
   " >> dhis2-db.sql
@@ -40,7 +40,7 @@ function fetch_data {
   elif [ $DATA_SET == "world-adoption" ]; then
     curl -L -o dhis2-db.sql.gz https://github.com/dhis2/dhis2-demo-db/raw/master/world-adoption/world-adoption.sql.gz?raw=true
   fi
-  
+
   patch_demo_db
 }
 
@@ -59,4 +59,8 @@ VERSION_TMP=${DHIS2_VERSION//[-._]/}
 
 fetch_data
 
-docker build -t pgracio/dhis2-db:$DHIS2_VERSION-$DATA_SET .
+image_id=$(docker build -q -t zechtz/dhis2-db:$DHIS2_VERSION-$DATA_SET .)
+echo "Image id: $image_id"
+
+docker login --username=$DOCKER_USERNAME --password=$DOCKER_PASSWORD
+docker push zechtz/dhis2-db

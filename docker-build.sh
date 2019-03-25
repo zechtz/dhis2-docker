@@ -42,11 +42,11 @@ wget -O "$current_dir/$releases_dir/$file_name" "https://s3-eu-west-1.amazonaws.
 
 cp -a "$current_dir/$releases_dir/$file_name" "$current_dir/releases/dhis2.war"
 
-# build new image using new dhis.war 
-image_id=$(docker build -q -t dhis2/dhis2-web:$DHIS2_VERSION-tomcat7-jre8-$dt .)
+# build new image using new dhis.war
+image_id=$(docker build -q -t zechtz/dhis2-web:$DHIS2_VERSION-tomcat7-jre8-$dt .)
 
 echo "Image id: $image_id"
-docker tag $image_id dhis2/dhis2-web:$DHIS2_VERSION-tomcat7-jre8-latest
+docker tag $image_id zechtz/dhis2-web:$DHIS2_VERSION-tomcat7-jre8-latest
 
-docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
-docker push dhis2/dhis2-web
+docker login --username=$DOCKER_USERNAME --password=$DOCKER_PASSWORD
+docker push zechtz/dhis2-web

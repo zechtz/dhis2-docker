@@ -1,25 +1,35 @@
 version: '2'
 services:
   database:
-    container_name: dhis2-database
-    image: pgracio/dhis2-db:2.30-sierra-leone
+    container_name: dhis2db
+    image: zechtz/dhis2-db:2.31-sierra-leone
     environment:
       POSTGRES_USER: dhis
       POSTGRES_DB: dhis
       POSTGRES_PASSWORD: dhis
       POSTGRES_DB_TARGET: dhis-target
       PG_DATA: /var/lib/postgresql/data/pgdata:z
+    volumes:
+      - .:/var/www/html
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
     ports:
      - "5433:5432"
   web:
-    container_name: dhis2-web
-    image: dhis2/dhis2-web:2.30-tomcat7-jre8-latest
+    container_name: dhis2web
+    image: zechtz/dhis2-web:2.31-tomcat7-jre8-latest
     environment:
       JAVA_OPTS: "-Xmx1024m -Xms4000m"
       POSTGRES_DB: dhis
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
     ports:
       - "8085:8080"
     depends_on:
       - database
     entrypoint: ./wait-for-it.sh -t 0 database:5432 --
     command: catalina.sh run # https://github.com/docker/compose/issues/3140
+
+volumes:
+  data: {}
