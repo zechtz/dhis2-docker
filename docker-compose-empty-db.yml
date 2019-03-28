@@ -1,14 +1,18 @@
 version: '2.1'
 services:
  database:
-   container_name: dhis2-db
-   image: mdillon/postgis:9.5
+   container_name: dhis2-empty-db
+   image: mdillon/postgis:10
    environment:
      POSTGRES_USER: dhis
      POSTGRES_DB: dhis
      POSTGRES_PASSWORD: dhis
      POSTGRES_DB_TARGET: dhis-target
-     #PG_DATA: /var/lib/postgresql/data/pgdata:z
+     PG_DATA: /var/lib/postgresql/data/pgdata:z
+   volumes:
+    - db_data:/var/lib/postgresql/data
+    - /etc/timezone:/etc/timezone:ro
+    - /etc/localtime:/etc/localtime:ro
    ports:
     - "5433:5432"
    healthcheck:
@@ -31,3 +35,6 @@ services:
      test: "curl -f http://web:8080"
      interval: 30s
      retries: 150
+
+volumes:
+  db_data:

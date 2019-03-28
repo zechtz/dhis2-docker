@@ -1,7 +1,7 @@
 version: '2'
 services:
   database:
-    container_name: dhis2db
+    container_name: dhis2-empty-db
     image: zechtz/dhis2-db:2.31-sierra-leone
     environment:
       POSTGRES_USER: dhis
@@ -10,7 +10,7 @@ services:
       POSTGRES_DB_TARGET: dhis-target
       PG_DATA: /var/lib/postgresql/data/pgdata:z
     volumes:
-      - .:/var/www/html
+      - db_data:/var/lib/postgresql/data
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
     ports:
@@ -32,4 +32,4 @@ services:
     command: catalina.sh run # https://github.com/docker/compose/issues/3140
 
 volumes:
-  data: {}
+  db_data:
